@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>Products</title>
+   <link rel="stylesheet" href="css/Additem.css">
+   <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+<div class="wrapper">
+   <div class="top_navbar">
+      <div class="hamburger">
+         <div class="hamburger__inner">
+            <div></div>
+            <div></div>
+            <div></div>
+         </div>
+      </div>
+      <div class="top_menu">
+         <div class="logo">IMS</div>
+         <div class="user_info">
+            <img src="https://image.ibb.co/cbCMvA/logo.png" alt="profile_pic">
+            <span>John Doe</span>
+         </div>
+      </div>
+   </div>
+   
+   <div class="main_container">
+      <div class="sidebar">
+         <div class="sidebar__inner">
+            <ul>
+               <li>
+                  <a href="homepage.html" class="dropdown-toggle">
+                     <span class="icon"><i class="fas fa-tachometer-alt"></i></span>
+                     <span class="title">Dashboard</span>
+                  </a>
+               </li>
+               <li>
+                  <a href="#" class="dropdown-toggle">
+                     <span class="icon"><i class="fas fa-file-alt"></i></span>
+                     <span class="title">Reports</span>
+                  </a>
+               </li>
+               <li>
+                  <a href="Products.html" class="active">
+                     <span class="icon"><i class="fas fa-box-open"></i></span>
+                     <span class="title">Products</span>
+                  </a>
+               </li>
+               <li>
+                  <a href="#" class="dropdown-toggle">
+                     <span class="icon"><i class="fas fa-shipping-fast"></i></span>
+                     <span class="title">Suppliers</span>
+                  </a>
+               </li>
+               <li>
+                  <a href="#" class="dropdown-toggle">
+                     <span class="icon"><i class="fas fa-receipt"></i></span>
+                     <span class="title">Purchase Orders</span>
+                  </a>
+               </li>
+               <li>
+                  <a href="#" class="dropdown-toggle">
+                     <span class="icon"><i class="fas fa-user"></i></span>
+                     <span class="title">User</span>
+                  </a>
+               </li>
+            </ul>
+         </div>
+      </div>
+      <div class="container">
+        <div class="form-wrapper">
+           <div class="form-container">
+              <form id="productForm" enctype="multipart/form-data">
+                 <h2>Add New Product</h2>
+                 <div class="form-group">
+                    <label for="productImage">Product Image:</label>
+                    <input type="file" id="productImage" name="productImage" accept="image/*" required>
+                 </div>
+                 <div class="form-group">
+                    <label for="productName">Product Name:</label>
+                    <input type="text" id="productName" name="productName" required>
+                 </div>
+                 <div class="form-group">
+                    <label for="productId">Product ID:</label>
+                    <input type="text" id="productId" name="productId" required>
+                 </div>
+                 <div class="form-group">
+                    <label for="productBarcode">Product Barcode:</label>
+                    <input type="text" id="productBarcode" name="productBarcode" required>
+                 </div>
+                 <div class="form-group">
+                    <label for="productCategory">Product Category:</label>
+                    <input type="text" id="productCategory" name="productCategory" required>
+                 </div>
+                 <button type="button" id="saveProductBtn" class="action-button">Save Product</button>
+              </form>
+           </div>
+        </div>
+     </div>
+   </div>
+</div>
+
+<script>
+$(document).ready(function() {
+   $(".hamburger").click(function() {
+      $(this).toggleClass("active");
+      $(".sidebar").toggleClass("active");
+      $(".container").toggleClass("active");
+   });
+
+   // Save product functionality
+   $("#saveProductBtn").click(function() {
+      var formData = new FormData($("#productForm")[0]);
+
+      // Send a POST request to save_product.php
+      $.ajax({
+         url: "save_product.php",
+         type: "POST",
+         data: formData,
+         contentType: false,
+         processData: false,
+         success: function(response) {
+            alert(response);
+            window.location.href = "Products.html"; // Redirect to Products.html
+         },
+         error: function() {
+            alert("Error saving the product.");
+         }
+      });
+   });
+});
+</script>
+</body>
+</html>

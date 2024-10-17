@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>Products</title>
+   <link rel="stylesheet" href="css/Products.css">
+   <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <style>
+      /* Add some basic styling for the table */
+      table {
+         width: 100%;
+         border-collapse: collapse;
+         margin-top: 20px;
+      }
+
+      th, td {
+         border: 1px solid #ddd;
+         padding: 8px;
+         text-align: left;
+      }
+
+      th {
+         background-color: #f2f2f2;
+      }
+
+      img {
+         width: 100px; /* Set a fixed width for product images */
+         height: auto; /* Maintain aspect ratio */
+      }
+
+      /* Modal styling */
+      .modal {
+         display: none; /* Hidden by default */
+         position: fixed; /* Stay in place */
+         z-index: 1; /* Sit on top */
+         left: 0;
+         top: 0;
+         width: 100%; /* Full width */
+         height: 100%; /* Full height */
+         overflow: auto; /* Enable scroll if needed */
+         background-color: rgb(0,0,0); /* Fallback color */
+         background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+      }
+
+      .modal-content {
+         background-color: #fefefe;
+         margin: 15% auto; /* 15% from the top and centered */
+         padding: 20px;
+         border: 1px solid #888;
+         width: 80%; /* Could be more or less, depending on screen size */
+      }
+
+      .close {
+         color: #aaa;
+         float: right;
+         font-size: 28px;
+         font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+         color: black;
+         text-decoration: none;
+         cursor: pointer;
+      }
+   </style>
+</head>
+<body>
+<div class="wrapper">
+   <div class="top_navbar">
+      <div class="hamburger">
+         <div class="hamburger__inner">
+            <div></div>
+            <div></div>
+            <div></div>
+         </div>
+      </div>
+      <div class="top_menu">
+         <div class="logo">IMS</div>
+         <div class="user_info">
+            <img src="https://image.ibb.co/cbCMvA/logo.png" alt="profile_pic">
+            <span>John Doe</span>
+         </div>
+      </div>
+   </div>
+
+   <div class="main_container">
+      <div class="sidebar">
+         <div class="sidebar__inner">
+            <ul>
+               <li>
+                  <a href="homepage.html" class="dropdown-toggle">
+                     <span class="icon"><i class="fas fa-tachometer-alt"></i></span>
+                     <span class="title">Dashboard</span>
+                  </a>
+               </li>
+               <li>
+                  <a href="#" class="dropdown-toggle">
+                     <span class="icon"><i class="fas fa-file-alt"></i></span>
+                     <span class="title">Reports</span>
+                  </a>
+               </li>
+               <li>
+                  <a href="Products.html" class="active">
+                     <span class="icon"><i class="fas fa-box-open"></i></span>
+                     <span class="title">Products</span>
+                  </a>
+               </li>
+               <li>
+                  <a href="#" class="dropdown-toggle">
+                     <span class="icon"><i class="fas fa-shipping-fast"></i></span>
+                     <span class="title">Suppliers</span>
+                  </a>
+               </li>
+               <li>
+                  <a href="#" class="dropdown-toggle">
+                     <span class="icon"><i class="fas fa-receipt"></i></span>
+                     <span class="title">Purchase Orders</span>
+                  </a>
+               </li>
+               <li>
+                  <a href="#" class="dropdown-toggle">
+                     <span class="icon"><i class="fas fa-user"></i></span>
+                     <span class="title">User</span>
+                  </a>
+               </li>
+            </ul>
+         </div>
+      </div>
+
+      <div class="container">
+         <div class="button-container">
+            <div class="action-bar">
+               <div class="left-actions">
+                  <button class="action-button" id="addItemBtn">Add Item</button>       
+                       </div>
+               <div class="right-actions">
+                  <select class="action-button" id="categoryDropdown">
+                     <option value="">Select Category</option>
+                     <option value="category1">Category 1</option>
+                     <option value="category2">Category 2</option>
+                     <option value="category3">Category 3</option>
+                  </select>
+                  <input type="text" id="searchInput" class="action-input" placeholder="Search..." />
+                  <button class="action-button" id="searchBtn">Search</button>
+               </div>
+            </div>
+         </div>        
+         <div id="searchResults"></div> <!-- Container to show search results -->
+
+         <!-- Table to display products -->
+         <table id="productsTable">
+            <thead>
+               <tr>
+                  <th>Image</th>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Barcode</th>
+                  <th>Category</th>
+                  <th>Actions</th> <!-- Add Actions column -->
+               </tr>
+            </thead>
+            <tbody>
+               <!-- Product rows will be populated here -->
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>
+
+<!-- Modal for editing product -->
+<div id="editModal" class="modal">
+   <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Edit Product</h2>
+      <form id="editForm">
+         <input type="hidden" id="editProductId" name="id" />
+         <div>
+            <label for="editImagePath">Image Path:</label>
+            <input type="text" id="editImagePath" name="image_path" />
+         </div>
+         <div>
+            <label for="editName">Name:</label>
+            <input type="text" id="editName" name="name" />
+         </div>
+         <div>
+            <label for="editBarcode">Barcode:</label>
+            <input type="text" id="editBarcode" name="barcode" />
+         </div>
+         <div>
+            <label for="editCategory">Category:</label>
+            <input type="text" id="editCategory" name="category" />
+         </div>
+         <button type="button" id="saveEditBtn">Save Changes</button>
+      </form>
+   </div>
+</div>
+
+<script>
+   $(document).ready(function() {
+   $(".hamburger").click(function() {
+      $(this).toggleClass("active");
+      $(".sidebar").toggleClass("active");
+      $(".container").toggleClass("active");
+   });
+
+   $(".dropdown-toggle").click(function() {
+      $(this).parent().find(".dropdown-menu").slideToggle("fast");
+      $(this).find(".dropdown-arrow").toggleClass("rotate");
+   });
+
+$(document).ready(function() {
+   // Fetch products and display in the table
+   function fetchProducts() {
+      $.ajax({
+         url: 'getProducts.php',
+         type: 'GET',
+         dataType: 'json',
+         success: function(data) {
+            let productsHtml = '';
+            data.forEach(function(product) {
+               productsHtml += `
+                  <tr data-id="${product.id}">
+                     <td><img src="${product.image}" alt="Product Image"></td>
+                     <td>${product.id}</td>
+                     <td>${product.name}</td>
+                     <td>${product.barcode}</td>
+                     <td>${product.category}</td>
+                     <td>
+                        <button class="edit-btn">Edit</button>
+                        <button class="delete-btn">Delete</button>
+                     </td>
+                  </tr>
+               `;
+            });
+            $('#productsTable tbody').html(productsHtml); // Populate the table body with product rows
+         },
+         error: function() {
+            $("#searchResults").html("<p>Error fetching products. Please try again later.</p>");
+         }
+      });
+   }
+
+   fetchProducts(); // Initial fetch of products
+
+   // Edit button functionality
+   $(document).on('click', '.edit-btn', function() {
+      const row = $(this).closest('tr');
+      const id = row.data('id');
+      const image = row.find('img').attr('src');
+      const name = row.find('td:nth-child(3)').text();
+      const barcode = row.find('td:nth-child(4)').text();
+      const category = row.find('td:nth-child(5)').text();
+
+      // Populate the modal fields
+      $('#editProductId').val(id);
+      $('#editImagePath').val(image);
+      $('#editName').val(name);
+      $('#editBarcode').val(barcode);
+      $('#editCategory').val(category);
+
+      // Show the modal
+      $('#editModal').show();
+   });
+
+   // Close modal functionality
+   $('.close').click(function() {
+      $('#editModal').hide();
+   });
+
+   // Save changes functionality
+   $('#saveEditBtn').click(function() {
+      const id = $('#editProductId').val();
+      const image_path = $('#editImagePath').val();
+      const name = $('#editName').val();
+      const barcode = $('#editBarcode').val();
+      const category = $('#editCategory').val();
+
+      $.ajax({
+         url: 'updateProduct.php', // Create this PHP file to handle updates
+         type: 'POST',
+         data: {
+            id: id,
+            image_path: image_path,
+            name: name,
+            barcode: barcode,
+            category: category
+         },
+         success: function(response) {
+            alert(response); // Show success or error message
+            $('#editModal').hide();
+            fetchProducts(); // Refresh product list
+         },
+         error: function() {
+            alert("Error updating product. Please try again.");
+         }
+      });
+   });
+
+   // Delete button functionality
+   $(document).on('click', '.delete-btn', function() {
+      const row = $(this).closest('tr');
+      const id = row.data('id');
+
+      if (confirm('Are you sure you want to delete this product?')) {
+         $.ajax({
+            url: 'deleteProduct.php', // Create this PHP file to handle deletion
+            type: 'POST',
+            data: { id: id },
+            success: function(response) {
+               alert(response); // Show success or error message
+               fetchProducts(); // Refresh product list
+            },
+            error: function() {
+               alert("Error deleting product. Please try again.");
+            }
+         });
+      }
+   });
+
+   // Add Item button functionality
+   $("#addItemBtn").click(function() {
+      window.location.href = "Additem.html";
+   });
+});
+   });
+</script>
+</body>
+</html>
